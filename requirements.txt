@@ -1,0 +1,11 @@
+pickle
+requests
+streamlit
+streamlit_lottie
+streamlit_authenticator
+streamlit_option_menu
+yfinance 
+pandas 
+base64
+prophet
+plotly
