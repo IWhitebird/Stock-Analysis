@@ -5,6 +5,5 @@ streamlit_authenticator
 streamlit_option_menu
 yfinance 
 pandas 
-base64
 prophet
 plotly
