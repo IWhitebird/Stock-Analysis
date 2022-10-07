@@ -38,7 +38,6 @@ lottie_people = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_qz
 lottie_contact = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_px0ntw70.json")
 lottie_graph = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_w9wl8mlm.json")
 
-
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -246,7 +245,7 @@ if authentication_status:
 
         st.title('Stock Forecast App')
 
-        stocks = ('GOOG', 'AAPL', 'MSFT', 'GME')
+        stocks = ('GOOG', 'AAPL', 'MSFT', 'GME', 'GC=F', 'BTC-USD')
         selected_stock = st.selectbox('Select dataset for prediction', stocks)
 
         n_years = st.slider('Years of prediction:', 1, 4)
