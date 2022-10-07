@@ -1,7 +1,7 @@
 requests
 streamlit
 streamlit_lottie
-streamlit_authenticator
+streamlit-authenticator==0.1.5
 streamlit_option_menu
 yfinance 
 pandas 
