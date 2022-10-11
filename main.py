@@ -1,23 +1,16 @@
-#home
-import imp
-from pickle import NONE
-import pickle
-from pathlib import Path
-from select import select
-from typing import Container
+import database as db
 import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
 import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 
-#info
+
 import yfinance as yf
 import pandas as pd
 import base64
 import matplotlib.pyplot as plt
 
-#predictions
 from datetime import date
 import yfinance as yf
 from prophet import Prophet
@@ -42,17 +35,14 @@ def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 local_css("style/style.css") 
-       
-names = ["Peter Parker", "Rebecca Miller"]
-usernames = ["pparker", "rmiller"]
 
-# load hashed passwords
-file_path = Path(__file__).parent / "hashed_pw.pkl"
-with file_path.open("rb") as file:
-    hashed_passwords = pickle.load(file)
+users = db.fetch_all_users()
+usernames = [user["key"] for user in users]
+names = [user["name"] for user in users]
+hashed_passwords = [user["password"] for user in users]
 
 authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
-    "sales_dashboard", "abcdef", cookie_expiry_days=30)
+    "Stock_dashboard", "abcdef", cookie_expiry_days=30)
 
 name, authentication_status, username = authenticator.login("Login", "main")
 
@@ -66,7 +56,7 @@ if authentication_status:
     with st.container():
         selected = option_menu(
             menu_title=None,  # required
-            options=["Home", "Info", "Prediction"],  # required
+            options=["Home", "Explore", "Stocks", "Crypto"],  # required
             menu_icon="cast",  # optional
             default_index=0,  # optional
             orientation="horizontal",
@@ -88,7 +78,7 @@ if authentication_status:
             with st.container():
                 left_column, right_column = st.columns(2)
                 with left_column:
-                    st.header("Information About Project")
+                    st.title("Information About Project")
                     st.write("##")
                     st.write(
                         """
@@ -106,12 +96,12 @@ if authentication_status:
 
             with left_column:    
                 st.write("---")
-                st.title("Mini Project Made by..")
+                st.header("Mini Project Made by...")
                 st.write("""
-                - Shreyas Patange  )
-                - Yash Pathare     )
-                - Mayuresh Parache )
-                - Sudhanshu Prasad )
+                - Shreyas Patange  
+                - Yash Pathare     
+                - Mayuresh Parache 
+                - Sudhanshu Prasad 
                 """)   
 
             with right_column:
@@ -119,7 +109,7 @@ if authentication_status:
                 st_lottie(lottie_people, height=300, key = "people")
 
             contact_form = """
-                    <form action="https://formsubmit.co/evilzgaming2003@email.com" method="POST">
+                    <form action="https://formsubmit.co/44a5b49c2f1fc754fa5a3eafecd973e9" method="POST">
                         <input type="hidden" name="_captcha" value="false">
                         <input type="text" name="name" placeholder="Your Name" required>
                         <input type="email" name="email" placeholder="Your Email" required>
@@ -141,17 +131,19 @@ if authentication_status:
                     st_lottie(lottie_contact, height=400, key = "contact")
 
 
-
+            st.sidebar.image(
+            "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/z3ahdkytzwi1jxlpazje",
+            width=50,
+            )
             st.sidebar.title(f"Welcome {name}")
             authenticator.logout("Logout", "sidebar") 
 
-    if selected == "Info":
+    if selected == "Explore":
         st.title("S&P 500 Stock Price Explorer")
 
         # Description of the App
         st.markdown("""
         This app retrieves the list of the **S&P 500** (from Wikipedia) and its corresponding **stock closing price** (year-to-date)!
-        * **Python libraries:** base64, pandas, streamlit, matplotlib, yfinance
         * **Data source:** [Wikipedia](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies).
         """)
 
@@ -162,6 +154,10 @@ if authentication_status:
         local_css("style/style.css")
 
         # Creating a Sidebar
+        st.sidebar.image(
+            "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/z3ahdkytzwi1jxlpazje",
+            width=50,
+        )
         st.sidebar.header('User Input Features')
 
         # Web scraping of S&P 500 data from Wikipedia
@@ -239,16 +235,20 @@ if authentication_status:
             for i in list(df_selected_sector.Symbol)[:num_company]:
                 price_plot(i) 
     
-    if selected == "Prediction":
+    if selected == "Stocks":
+        st.sidebar.image(
+            "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/z3ahdkytzwi1jxlpazje",
+            width=50,
+        )
         START = "2015-01-01"
         TODAY = date.today().strftime("%Y-%m-%d")
 
         st.title('Stock Forecast App')
 
-        stocks = ('GOOG', 'AAPL', 'MSFT', 'GME', 'GC=F', 'BTC-USD')
+        stocks = ('GOOG', 'AAPL', 'MSFT', 'GME', 'GC=F')
         selected_stock = st.selectbox('Select dataset for prediction', stocks)
 
-        n_years = st.slider('Years of prediction:', 1, 4)
+        n_years = st.sidebar.slider('Years of prediction:', 1, 4)
         period = n_years * 365
 
 
@@ -296,3 +296,99 @@ if authentication_status:
         st.write("Forecast components")
         fig2 = m.plot_components(forecast)
         st.write(fig2)              
+    if selected == "Crypto":
+        st.title("Crypto Prices")
+        st.sidebar.image(
+            "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/z3ahdkytzwi1jxlpazje",
+            width=50,
+        )
+
+        c1, c2 = st.columns([1, 8])
+
+        with c1:
+            st.image(
+                "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/285/chart-increasing_1f4c8.png",
+                width=90,
+            )
+
+        st.markdown(
+            """ **Crypto Dashboard**
+        A simple cryptocurrency price app pulling price data from the [Binance API](https://www.binance.com/en/support/faq/360002502072).
+            """
+        )
+
+        st.header("**Selected Price**")
+
+        # Load market data from Binance API
+        df = pd.read_json("https://api.binance.com/api/v3/ticker/24hr")
+
+        # Custom function for rounding values
+        def round_value(input_value):
+            if input_value.values > 1:
+                a = float(round(input_value, 2))
+            else:
+                a = float(round(input_value, 8))
+            return a
+
+
+        crpytoList = {
+            "Price 1": "BTCBUSD",
+            "Price 2": "ETHBUSD",
+            "Price 3": "BNBBUSD",
+            "Price 4": "XRPBUSD",
+            "Price 5": "ADABUSD",
+            "Price 6": "DOGEBUSD",
+            "Price 7": "SHIBBUSD",
+            "Price 8": "DOTBUSD",
+            "Price 9": "MATICBUSD",
+        }
+
+        col1, col2, col3 = st.columns(3)
+
+        for i in range(len(crpytoList.keys())):
+            selected_crypto_label = list(crpytoList.keys())[i]
+            selected_crypto_index = list(df.symbol).index(crpytoList[selected_crypto_label])
+            selected_crypto = st.sidebar.selectbox(
+                selected_crypto_label, df.symbol, selected_crypto_index, key=str(i)
+            )
+            col_df = df[df.symbol == selected_crypto]
+            col_price = round_value(col_df.weightedAvgPrice)
+            col_percent = f"{float(col_df.priceChangePercent)}%"
+            if i < 3:
+                with col1:
+                    st.metric(selected_crypto, col_price, col_percent)
+            if 2 < i < 6:
+                with col2:
+                    st.metric(selected_crypto, col_price, col_percent)
+            if i > 5:
+                with col3:
+                    st.metric(selected_crypto, col_price, col_percent)
+
+        st.header("")
+
+
+        @st.cache
+        def convert_df(df):
+            return df.to_csv().encode("utf-8")
+
+
+        csv = convert_df(df)
+
+        st.download_button(
+            label="Download data as CSV",
+            data=csv,
+            file_name="large_df.csv",
+            mime="text/csv",
+        )
+
+        st.dataframe(df, height=2000)
+
+
+        st.markdown(
+            """
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        """,
+            unsafe_allow_html=True,
+        )
