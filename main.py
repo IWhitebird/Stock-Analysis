@@ -8,7 +8,7 @@ from streamlit_option_menu import option_menu
 import yfinance as yf
 import pandas as pd
 import base64
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 
 from datetime import date
 import yfinance as yf
@@ -35,7 +35,7 @@ def local_css(file_name):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 local_css("style/style.css") 
    
-
+st.cache_data
 if True:    
     with st.container():
         selected = option_menu(
