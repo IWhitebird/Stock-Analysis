@@ -1,4 +1,3 @@
-import database as db
 import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
@@ -18,7 +17,7 @@ from prophet.plot import plot_plotly
 from plotly import graph_objs as go
 
 
-st.set_page_config(page_title="Stock Analizer", page_icon = ":bar_chart:", layout = "wide")
+st.set_page_config(page_title="Stock Analizer", page_icon = "📊", layout = "wide")
 
 def load_lottieurl(url):
         r = requests.get(url)
@@ -35,24 +34,9 @@ def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 local_css("style/style.css") 
+   
 
-users = db.fetch_all_users()
-usernames = [user["key"] for user in users]
-names = [user["name"] for user in users]
-hashed_passwords = [user["password"] for user in users]
-
-authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
-    "Stock_dashboard", "abcdef", cookie_expiry_days=30)
-
-name, authentication_status, username = authenticator.login("Login", "main")
-
-if authentication_status == False:
-    st.error("Username/password is incorrect")
-
-if authentication_status == None:
-    st.warning("Please enter your username and password")
-
-if authentication_status:    
+if True:    
     with st.container():
         selected = option_menu(
             menu_title=None,  # required
@@ -101,7 +85,6 @@ if authentication_status:
                 - Shreyas Patange  
                 - Yash Pathare     
                 - Mayuresh Parache 
-                - Sudhanshu Prasad 
                 """)   
 
             with right_column:
@@ -135,8 +118,7 @@ if authentication_status:
             "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/z3ahdkytzwi1jxlpazje",
             width=50,
             )
-            st.sidebar.title(f"Welcome {name}")
-            authenticator.logout("Logout", "sidebar") 
+            st.sidebar.title(f"Welcome ")
 
     if selected == "Explore":
         st.title("S&P 500 Stock Price Explorer")
@@ -296,6 +278,7 @@ if authentication_status:
         st.write("Forecast components")
         fig2 = m.plot_components(forecast)
         st.write(fig2)              
+    
     if selected == "Crypto":
         st.title("Crypto Prices")
         st.sidebar.image(

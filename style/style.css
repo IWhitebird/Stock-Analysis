@@ -28,7 +28,7 @@ button[type=submit]:hover {
 
 
 /* Hide Streamlit Branding */
-#MainMenu {visibility: hidden;}
+/* #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
@@ -43,4 +43,4 @@ header {visibility: hidden;}
                     padding-right: 1rem;
                     padding-bottom: 3.5rem;
                     padding-left: 1rem;
-                }
+                } */
