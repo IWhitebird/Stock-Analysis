@@ -17,7 +17,7 @@ from prophet.plot import plot_plotly
 from plotly import graph_objs as go
 
 
-st.set_page_config(page_title="Stock Analizer", page_icon = "📊", layout = "wide")
+st.set_page_config(page_title="Stock Analyzer", page_icon="📊", layout="wide")
 
 def load_lottieurl(url):
         r = requests.get(url)
